@@ -1,0 +1,46 @@
+Damage Calculation 
+15.1 Configuring Damage Calculation
+Since v2.0 ACF features a brand new, highly customizable, damage calculation system. 
+
+To Setup your damage calculation class you have to create a child blueprint  inheriting from ACFDamageCalculation or modify the ACFSampleDamageCalculatorBP. 
+
+For every ACF Entity you can set the DamageCalculator class to be used in it’s ACFDamageHanlderComponent.
+
+An example on how to configure that: 
+
+
+In the Map displayed above you can define how the final damage is configured for every particular damage type.
+
+For instance, the ACFCutDamage is calculated starting from the Melee Damage Parameter of the Damage dealer as:
+
+RPG.Parameters.MeleeDamage * ScalingFactor.
+
+(Any damage may depend by multiple parameters with different scaling factors). 
+
+The number obtained will be the reduced in percentage by  Defense parameter of the Damage Receiver: 
+
+RPG.Parameters.Defense * ScalingFactor.
+
+This is a reduction in percentage, this means that if RPG.Parameters.Defense * ScalingFactor. = 100.f, the damage will be 0 because this means that this character has 100% defense for that damage types. Even in that case the defense value may be affected by multiple parameters with different scaling factors. 
+
+
+Additional multipiers my be added depending on the resulting HitReaction, in particular in the sample image, if the hit reaction is a dodge, the multiplier will be 0, meaning that in case of dodge no damage will be applied. 
+
+Crit Percentage is the Parameter to be used to decide if the current damage will be a crit or not. 
+
+For every damage type you can define the parameter to be used and a scaling factor. Even in that case the value will be considered as a percentage, meaning that a 100 Chance will result that every attack will be a critical one. 
+
+Critical Damage will be calculated As 
+
+FinalDamage * CritMultiplier 
+
+RandomDamageDevaitionPercentage is the random deviation from the calculated FinalDamage. 
+
+if Final Damage is 100 and the random deviation is 5, Final Damage sill be adjusted to be a random number between 95 and 105.
+
+Another multiplier on the Final Damage can be applied depending on the hit zone of the DamageReceived. Damages Zones can be defined inside the ACF Character. Damage zones are only applied to ACFCharacters. 
+
+DefenseStanceParameterWhenBlocked  the tag of the parameter to be used to reduce the incoming damage when an attack is blocked
+
+StaggerResistance: TO BE IMPLEMENTED!
+

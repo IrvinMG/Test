@@ -1,0 +1,280 @@
+Character Controller - NEW V3
+ACF have two different AnimationBlueprint to animate your characters, both of them are template so can be used with any skeleton. 
+
+	● 	The ACF_Template_ABP which is based on Lyra logic and animations together with the
+
+		ACF_BaseMoveset.
+
+	● 	The ACF_SimpleTemplate_ABP which uses traditional animation with blendspaces.
+
+All the Animation Blueprints have perfect data decoupling being “pure logic”, all the data is handled throught the usage of Linked Animation Layers. Animation Layers are additional AnimBlueprint used to fill the main blueprint with all the animations needed by giving the possibility to “swap” between layers at runtime, so that you can change your animations when, for instance, you change weapons. 
+
+In ACF, inside both the ACF Templates, we have different kind of Animation layers:
+
+
+Moveset Layers: Here is where you should put your full body locomotion animation for the character.
+
+Overlay Layers: Used to set the animations that will be blended on the top body of your character. You can decide do only apply an overlay when you equip a weapon instead of changing the whole Moveset Layer.
+
+Rider Layer: Contains the animations and blendspace to be played when the character is riding a mount. You may a have a Riding Layer for every type of mount you have to define the mount-specific animations (Es Mounting a horse will have different animations than mounting a car).
+
+IKLayer: An animation BP to manage IK, by default it has feet and hands IK. 
+
+
+Layers are associated to GameplayTags so you can switch between layers at runtime with the following nodes: 
+
+Rider layer are automatically activated when you start riding and you can configure the required Layer tag inside the ACFMountComponent in the Mount blueprint itself. 
+
+MovesetsLayers and OverlayLayers are switched automatically when equip a weapon in your hands with the tags specified in the Weapon itself, but you can always switch them manyally with those nodes available in both your character and you ACFAnimInstance.
+
+
+Creating New Layers
+To create new Layers you just need to create a child AnimBlueprint from the one provided by ACF itself: 
+
+ACF Moveset Layer
+
+If you are using ACF_Template_ABP you’d need to create a child AnimBP starting from ACF_BaseMoveset as a base class and add all your custom animations there. NOTE: this AnimBP requires ROOT MOTION animations with ROOT Motion enabled and those notify for footsteps to enable Stride Warping). 
+
+
+If you are using ACF_SimpleTemplate_ABP you’d need to create a child class starting from ACF_SimpleMoveset OR ACF_QuadrupedMoveset and fill those to require data. 
+
+ACF_SimpleMoveset : more suited for humanoid like locomotion with strafe movement
+
+ACF_QuadrupedMoveset : suited for quadruped style locomotion with turn movement
+
+ACF Overlay Layer
+
+To create an Overlay layer you’d need to subclass the ACF_BaseOverlay AnimBP and  fill it with your overlay data, in paticular the Aim Offset, to be always applied, and a set of “upper body” animations that will be blended on top to the ofrom the ACF MovesetLayer with the specific alpha and switched depending on the current state (es: when aiming, blocking etc.)
+
+
+Once Created, layers need to be set inside the main Animblueprint to be automatically (or manually) activated and switched. 
+
+HINT: If no GameplayTag are selected, the Root tag as provided in Project Settings / Ascent Combat Framework will be used
+
+Example configuration for ACF_BaseMoveset:
+
+Moveset Layers will be assigned at the end in the Animation Blueprint. Following properties are
+
+configurable in a Moveset Layer.
+
+Name
+
+Description
+
+Play Rate Clamp Starts Pivots
+
+Starts Pivots speed in relation of the speed of the player
+
+Play Rate Clamp Cycle
+
+Cycle speed in relation of the speed of the player
+
+Enable Leaning
+
+Enables that the character lean left and right while turning
+
+Anim Blend Time
+
+Time it takes to blend between animations
+
+Moveset
+
+Walk Cardinals
+
+Forward, backward, left and right walk animations
+
+Crouch Walk Cardinals
+
+Forward, backward, left and right crouch animations
+
+Jog Cardinals
+
+Forward, backward, left and right jog animations
+
+Jog Pivot Cardinals
+
+Forward, backward, left and right jog pivot animations
+
+Jog Start Cardinals
+
+Forward, backward, left and right jog start animations
+
+Jog Stop Cardinals
+
+Forward, backward, left and right jog stop animations
+
+Walk Start Cardinals
+
+Forward, backward, left and right walk start animations
+
+Walk Stop Cardinals
+
+Forward, backward, left and right walk stop animations
+
+Forward Facing Starts
+
+Forward, backward, left and right forward facing start animations
+
+Additive Leaning
+
+Additive Leaning Blendspace
+
+Idle
+
+Idle Breaks
+
+Array of idle break animations
+
+Idle Walk
+
+Idle walk animation
+
+Idle Normal
+
+Idle animation
+
+Turn in Place Left
+
+Turn left animation while standing
+
+Turn in Place Right
+
+Turn right animation while standing
+
+Crouch
+
+Crouch Start Cardinals
+
+Forward, backward, left and right crouch start animations
+
+Crouch Stop Cardinals
+
+Forward, backward, left and right crouch stop animations
+
+Crouch Pivot Cardinals
+
+Forward, backward, left and right pivot animations
+
+Crouch Idle Entry
+
+Animation of transition from idle to crouch state
+
+Crouch Idle Exit
+
+Animation of transition from crouch back to idle state
+
+Crouch Idle
+
+Idle crouch animation 
+
+Crouch Turn in Place Left
+
+Turn left crouch animation while standing
+
+Crouch Turn in Place Right
+
+Turn right crouch animation while standing
+
+Jump
+
+Jump Start
+
+Start animation of the jump
+
+Jump Apex
+
+Animation of jump when highest point reached
+
+Jump Fall Land
+
+Animation of landing
+
+Jump Recovery Additive
+
+Time that the character needs for recovery of jump
+
+Jump Start Loop
+
+Looped animation of jump start 
+
+Jump Fall Loop
+
+Looped animation of jump fall
+
+Moveset Overlay Layers
+
+Overlays are used to blend between the animations of the base moveset and the animations of
+
+the overlay.
+
+Name
+
+Description
+
+Aim Offset
+
+Aim Offset
+
+Aim Offset. Aim or look at animations of the character
+
+Overlay
+
+Default Switch Time
+
+Default time to switch overlays or movesets
+
+Idle Overlay
+
+Overlay Anim
+
+Idle animation that should be blend over the moveset animation
+
+Blend Time
+
+Time it takes to blend between to the Idle animation
+
+Blend Alpha
+
+Alpha value that defines how much percentage of the Idle overlay animation is blended over
+
+Aim Overlay
+
+Overlay Anim
+
+Aim animation that should be blend over the moveset animation
+
+Blend Time
+
+Time it takes to blend between to the Aim animation
+
+Blend Alpha
+
+Alpha value that defines how much percentage of the Aim overlay animation is blended over
+
+Block Overlay
+
+Overlay Anim
+
+Block animation that should be blend over the moveset animation
+
+Blend Time
+
+Time it takes to blend between to the Block animation
+
+Blend Alpha
+
+Alpha value that defines how much percentage of the Block overlay animation is blended over
+
+Custom Overlay
+
+Overlay Anim
+
+Custom animation that should be blend over the moveset animation
+
+Blend Time
+
+Time it takes to blend between to the Custom animation
+
+Blend Alpha
+
+Alpha value that defines how much percentage of the Custom overlay animation is blended over

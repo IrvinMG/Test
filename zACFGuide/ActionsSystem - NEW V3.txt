@@ -1,0 +1,50 @@
+ActionsSystem - NEW V3
+
+All the actions that you can do in ACF, from attacking to dodging or getting hit are executed through the actions system. 
+
+Actions system is a generic way to handle gameplay actions why abstracting generic actions like consuming Statistics (es reducing stamina), having cooldown, apply logic at the start / end of an animations etc. and manages replication in an automatic way. 
+
+Actions system is managed throught the ACFActionsManagerComponent who needs to be added to any of your actor who may perform an action. 
+
+Actions are grouped in “ActionsSets” which are basically container of actions. 
+
+
+In the above image “ACF_Player_AS” is the default ActionsSet, the actions inside it are available at any moment. 
+
+The actions below, “MovesetActions” are available only while the specific MovesetAction Tag is activated. By default is triggered by changing weapon, so for instance, every weapon has the chance of activating a specific Moveset Action Tag, here a sample of a ACFSwordBP from the sample wich activated the Moveset.SingleHandSword ActionsSet. 
+
+
+
+So with the sword equipped we can perform all the actions in ACF_Player_AS and the all the ones in ACF_SwordActions_AS, while when the sword is not equipped, only the actions in ACF_Player_AS will be considered.
+
+To create an actions you only need to right click in the content broser and select ACF->ActionsSet. The same procedure can be done to create a new Action (ACF->Action).
+
+Inside the ActionsSet you can set and configure all the actions that can be performed by your character. ACF comes with dozens of actions pre made that you can configure, like Attacks, dodges etc. All of them comes with tons of editable properties, here a non-complete list of all the actions natively provided by ACF that you can use iin your game: 
+
+
+But of course you can still extend the system by creating your own actions. This can be done as described above from the content browser or simply by creating a blueprint class which inherits from ACFBaseAction.
+
+Inside the action itself you can implement the provided events to define your gameplay logic, in particular:
+
+
+CanBeExecuted : to define if the action can be Executed. 
+
+OnActionStarted: Called when the action is triggerd
+
+OnActionExited: Called when the actions is finished, by default when the connected animation is finished
+
+GetMontageSectionName: If your montage has more than one section you can write here the logic to define the section to be played
+
+OnTick: called every frame during the execution
+
+ExitAction: To forcilbly Terminate an action
+
+To active the action you ‘d need to set it inside the specific ActionsSet and assign it a specific tag and optionally an animation montage to be played during the Action. You can do that by just higgint the “+” button inside the Actions set.
+
+Then you can customize the properties of your action like his cost (for instance 25 stamina points etc.) his requirement etc. and assign a gameplay tag to it, in this case Actions.Dodge
+
+
+To trigger that action you’d need to call the function “TriggerAction” from the ACFActionsManagerComp
+
+
+Where the tag is the GameplayTag of the action, the priority identifies if current action can interrupt other actions (higher priority actions can interrupt lower priority ones), CanBeStored needs to be true if the action can be buffered and executerd at the end of current action if it’s not possible to execute it now and the string is just a contextual parameter that will be send to the action that can be used at will. 

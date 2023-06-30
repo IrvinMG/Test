@@ -1,0 +1,21 @@
+Dynamic Ragdoll - NEW
+To let your ragdoll work, you’ll need first to modify the phisics asset of your Skeletal Mesh. 
+
+Open your phisics asset and modify it as follows: 
+
+Set the phisics type of the root as Kinematic and set his collision response to Disabled.
+
+
+If your phisics asset does not have a Root shape, click on the settings button on top, select, ShowAllBones and then you should see the whole skeleton in the Skeleton Three window. 
+
+
+Now add a sphere shape to the root:
+
+
+Then add a constraint from the root to the pelvis:
+
+
+Then select the newly created constraint and set all the three angular limites to Fre
+
+As described before, set the phisics type of the root as Kinematic and set his collision response to Disabled. e.
+

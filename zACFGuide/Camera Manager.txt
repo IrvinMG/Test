@@ -1,0 +1,42 @@
+5.1 Overview
+CCM is a small plugin that implements a state-based camera system that will allow you to easily blend between camera movements with just one blueprint node. It supports different kinds of camera movements.
+
+5.2 Setup
+To use CCM you have to change the actual PlayerCameraManager to CCMPlayerCameraManager in your Player Controller. 
+
+
+Make sure that inside CCMPlayerCameraManager the datatable for Camera Movements have been set up (Click on the lens close to the blueprint to directly go in the specific folder in Content browser). To add your camera events you have to setup the DataTable in the CameraManager. If you cannot see the CCM folder, on the bottom of the content browser navigate to ViewOptions ->ShowPlugIn Content or ViewOptions->ShowEngineContent depending on where you installed the plugin. 
+
+5.3 Adding your camera Events
+In the two datatables you can add your Camera Movements and Rotations and configure them.
+
+
+Camera Offset: relative position of the camera to the end of the movement.
+
+InterpSpeed: the speed of the movement
+
+Fov: the relative change in field of view of your camera.
+
+FOV Interp Speed: the speed in which your FOV Changes.
+
+You can also add a CameraShake class and configure it’s intensity and if it’s looping. In ACF this is used for Sprinting, for instance. Please notice that Camera Movements can be nested and you can have multiple movements playing simultaneously.
+
+  5.4 Triggering Camera Events
+All the camera event mentioned above are exposed to blueprint as Static Function so that they can be triggered by everywhere by just calling the relative function TriggerCameraEvent/StopCameraEvent and their timed version TriggerTimedCameraEvent that automatically stops after the decided amount of seconds. 
+
+LockOnTarget: an useful function that allows you to lock your camera to point to a specific actor. Useful for instance for a dialogue system.
+
+For more information please check the DocuActor inside the plugin. 
+
+Please notice that CCM automatically takes the references of the camera of the currently possessed Pawn and updates automatically once the pawn changes.
+
+  5.5 Triggering Camera Sequences
+
+Camera sequences are camera movements made following a spline. 
+
+To prepare a camera sequence you'll have to add a CCMCameraSplineComponent and define the spline your camera must follow. Then you can setup the movement of the camera by configuring the component and giving it a name. 
+
+To trigger a camera sequence you must GetLocalCCMCameraManager and TriggerCameraSequence passing the reference of the actor who owns the CCMCameraSplineComponent and the name of the actual Spline component (SequenceName). 
+
+You can then add a CCMLookAtPointComponent, give it a name and set it as LookAtPoint in CCMCameraSplineComponent, this will make the camera to orient and track that point in space. If you want to changed the configuration of the sequence during the play, you can use a CCMSequenceNotifyState on any animation. The config of the notify will override the one of the current camera sequence (there can only be 1 camera sequence playing per client at a time) until the end of the state, then it will return back to default config. 
+

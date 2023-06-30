@@ -1,0 +1,31 @@
+Block System 
+14.  Defense System
+14.1 Block System
+To activate the block system you’ll have to add your ACFDefenseStance component to the selected Character. 
+
+To start entering in block mode, you can do as follows: 
+
+
+Once in Defend Mode the AdditiveBlendspace in Current Moveset will be automatically activated.
+
+An example of an additive block blendspace made with Kubold Anims:
+
+
+A brief explanation of how to configure the component:
+
+
+While in Defense stance, every damage received will be analyzed to identify if it can be blocked. You can define which damage types are blockable (the array BlockableDamage) and from what direction the character is able to block (BlockDirection). To be able to block when unarmed, CanBlockWhenUnarmed must be checked, To enter in defence stance at least one of the InHand weaponw must have the flag CanBeUsedForBlock checked. 
+
+If the received attack can be blocked, ActionToBeTriggeredOnBlock will be triggered. 
+
+Once the Damage is blocked, the incoming damage multiplied for the DamagedStatisticsMultiplier  will be subtracted from DamagedStatistic. In our case IncomingDamage * DamagedStatisticsMultiplier will be removed from Stamina.
+
+Once the DamagedStatistic reaches 0, ActionToBeTriggeredOnDefenseBreak will be triggered and the character will stop defending automatically. He will be able to enter Defense State when it’s DamagedStatistic (Stamina in our sample) will be above MinumumDamageToStartBlocking.
+
+14.2 Counter Attacks
+  Counter attacks are special action that can be performed during a particular time window. 
+
+To set the actual beginning / end of a counter attack window you can use the animNotify ACFCounterEnabledNotifyState in any of yours animations (ideally in the block reaction one). 
+
+If the function TryCounterAttack is called while the opening window is enabled and the incoming damage is contained in CounterableDamages, CounterAttackAction will be triggered iwith an high priority. 
+

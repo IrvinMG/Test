@@ -1,0 +1,81 @@
+Items and Equipment
+Items 
+The base class to refer for Items is ACFItem, every Item has a set of native properties that can be used for UI:. Items are categorized by ItemType (Weapons, Armors, Consumable, Materials) and by the slot in which they can be equipped. The ItemSlot GameplayTag is used by a character to equip it in the appropriate slot. For every character you can create as many equipment slot as you want by just adding the relative gameplayTags in the Datatable Set in Configuration as already explained in chapter 2. To make a slot available for a character you have also to add it to the AvailableItemsSlot. For the blueprint functions look at the ACFDocuItem.
+
+
+EquipmentComponent
+Manages the character’s inventory. and equipment.  You can see the blueprint functions inside the ACFDocuCharacter. In the blueprint settings you can define the Available Item Slots, which are the GameplayTag of the equippable ItemsSlot. Each Item has an ItemSlot, that is the slot it is automatically inserted if you want to equip it and it is defined in its ItemInfo.
+
+Drop items on death defines if this Character should drop all his Equipped Items when dead.
+
+Max Inventory Slot is the inventory maximum number of items. Instead the Max Inventory Weight is the maximum weight that the character can carry. When you try to add an item to the inventory, that Item won’t be equipped if one of the two parameters is surpassed.
+
+Starting Items are the items that are added to the character when it is spawned. They can be edited directly in this blueprint. You can choose the class, the number, if it is automatically equipped on spawn. You can choose a probability whether that item will be dropped when the owner will die.
+
+
+The equipment of each character is specified in the Equipment Component. There you can
+
+control the available equipment slots of the character.
+
+
+You can create more slots and edit the defaunt ones by just creating new relative GameplayTags under the Itemslot root tag. 
+
+You can also configure the start items that this character owns. Those items will be added to his inventory at game startup:
+
+
+Note: If you are facing an issue where items are not added to your character’s inventory then
+
+take a look at the “MaxInventorySlots” parameter.
+
+ Equippables and Consumables
+
+To actually use an item is necessary that it is in the character Equipment. Equipped items are stored in an array inside the property Equipment in the ACFEquipmentComponent, EquippedItems. Each item is assigned to his Slot, which his a GameplayTag.This means that you can have as many slots as you want. 
+
+Once you Use or Equip an item from the Inventory (with UseInventoryItem or EquipInventoryItem) it is automatically assigned to the appropriate Slot (the one provided in the ItemInfo inside the Item) in the equipment if it is Marked as an available Slot for that character. For each Character you have to define the actual available slots in the EquipmentComponent by filling the AvailableItemsSlot Array. This is useful to create Characters that cannot use a particular type of items (each characters that can only use melee weapons and not ranged, etc.)
+
+Once an item is in the equipment it can be used by calling UseItemBySlot. If it's a weapon, it will be moved from the OnBodySocket to the EquippedSocket.
+
+If it's a consumable the OnItemUsed will be called and a unit of item will be removed. 
+
+
+Weapons and armors
+Weapons and armors are particular kind of Equippable. 
+
+Both of them have a set AttributeSetModifiers that are applied to the owning character once they are equipped in their relative slot. Every armor needs a skeletal mesh that is rigged to the same skeleton of the owning character, once it is equipped
+
+it will autoamically follow all the animations of the owner.
+
+Once a weapon is the equipped, it will be spawned in the world and attached to his back socket. At this point his modifiers are NOT applied. If you sheath your weapon it will be moved from the OnBodySocket to the EquipSocket (the on Hand one) and only then his modifiers are applied. 
+
+Armors instead needs to have the same skeleton of the CharacterOwner. So once they are spawned they are automatically set to follow the base mesh of the ACFCharacter as MasterPose.
+
+World Item
+An ACFWorldItem has an array of items (Items) that are the ones that will be picked up by the character that will interact with it. The first item of Items is the one that will be used for the world mesh and the interaction info.
+
+A Player can interact with thiose Actors. An item can be looted, or it is created when an InventoryItem is dropped. Events are exposed in the blueprint to personalise the behaviour of the item when a player interacts with it. You can change the default WorldItem class to be used in drop functions in ProjectSettings -> AscentCombatFramework.
+
+If you want that your character picks up the items instead of having it directly in the inventory
+
+from game start you need to use the ACFWorldItem or the ACFChestBP.
+
+Both used the ACFStorageComponent and/or ACFProceduralStorageComponent.
+
+● The ACFStorageComponent holds items that are predefined and the outcoming items
+
+the player gets is always the same.
+
+● The ACFProceduralStorageComponent is an extension of ACFStorageComponent
+
+and additionally defines items that will be generated by rules so the resulting items the
+
+player receives can be different from interaction to interaction.
+
+
+The ACFWorldItem and the ACFChestBP implements the ACFInteractable Interface that is
+
+needed for the actual interaction between objects and the player’s character.
+
+Crafting and Vendors
+ACF features a powerfull yet simple to use crafting system that allows to create new Items and upgrade current items. All the functions needed to enable it are in the ACF Crafting Component, that can be applied to wathever actor you want: an NPC, a bench, etc.. 
+
+To make it work you need to add to your player controller the ACFCurrencyComponent, which handles are the currency related stuff. Then under the category ACF you'll find all the required functions to create and upgrade items from the Equipment Component of the currentrly controlled character.

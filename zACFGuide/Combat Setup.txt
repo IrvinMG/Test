@@ -1,0 +1,33 @@
+Combat Setup
+
+6.1 General Setup
+Before starting to create your game characters you need to setup the Plugin to handle your game specific types. ACF works on generic data by extensively using gameplay tags, so basically you have to define your game-specific types by modifying ACF bases data tables like described in chapter 2.2 for Statistics, Parameters etc or creating new ones. 
+
+Together with the plugin you’ll find a sample tag configuration, I strongly suggest to start with that one and than modifying them while you proceed with your game. In the AscentCombatFramework/Configuration folder you’ll find a set of Datatables that implements the GameplayTags that you can modify at your will to meet your Game’s Design.
+
+ActionsTag: those gameplayTags are used to identify Characters Actions like Attacks, Dodge, Hit, etc. 
+
+ItemTags: Tags that define the different type of objects (weapons, armor, consumable, swords, etc.) defined hierarchically. 
+
+ItemSlots Tag: The list of slots in which every item can be assigned when it is equipped. 
+
+MovesetTags: For any character you can define multiple movesets that are switched when they equip different weapons. For every weapon you can define the relative moveset.
+
+CommandTags: Tag to identify Commands to give to your AIs and Companions.
+
+RPGTags: explained in chapter 2.
+
+Enchantment Tag: To enchant weapons, will come in the next update!
+
+In Project settings you have to tell the system what are the Root Tag used to identify your game specific types and what are the Default Tags:
+
+
+Basically with this we are telling to ACF which is the default Character State when no trigger is received (Actions.Idle), which is the default state to be triggered when a character gets hit (Actions.Hit) or when his RPG.Statistics.Health reaches 0 (Actions.Death).
+
+6.2 Battle Types
+For every ACFEntity (actors that implements IACFEntityInterface)  you have to select his CombatTeam:  Enemies or heroes, defining the “side” for which this AI is fighting for. CombatTeam are normally assigned by Controllers, both ACFPlayerController and ACFAIControllers gives the developer the possibility to choose the team for which the controlled AI is fighting for. Neutral AI are not involved in battles, useful for example for NPCs.
+
+In ACFGamesState you can set the BattleType. The default value is HeroesAgainstEnemies and this means 8as easily understable) that in this case Heroes are recognising Enemies AIs as enemies and vice versa. EveryoneOneAgainstEveryone should be selected for Deathmatch like game modes in which there are no team and everyone can be hit by everyone.
+
+Notice: ACF is built as a Listener-Server Multiplayer. 
+

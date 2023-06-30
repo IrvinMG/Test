@@ -1,0 +1,32 @@
+Targeting System
+4.1 Basic Setup
+ATS is the module used for target detection and camera locking. It is based on a highly configurable component that should be added to your PlayerController. Then to make an actor targetable it should be Implement the UATSTargetableInterface. To implement an interface, go to your Blueprint -> Class Settings -> Implements Interface -> Add and select ATSTargetableInterface. Now you need to configure the component.
+
+4.2 Component Configuration
+
+To trigger the targeting system you have to call the TriggerTargeting function from your component, to swap targets you have to call Up/RightSearchTargetWithInput. 
+
+
+Target detection is collision based, so you need to default which channels should be checked. For optimizations reasons all other channels are ignored. The Max target distance is the radius of the collision detection and the Max Angular Distance Degree indicates the radius of the actual targeting cone. 
+
+There are multiple kind of Targeting: 
+
+Lock Camera: automatically locks Controller view on target
+
+Magnetic Lock Camera; magnetically move your Controller view on target, you can slightly move it, but the position will be progressively automatically moved again on your targeting. Magneting Strength can be tuned.
+
+You can also choose which is your logic to choose the best target between the nearest one and the one that is nearest to the Front vector of your Actor owner.
+
+To avoid awkward camera positioning you can also set an up/bottom pitch limit. 
+
+4.3 Targeting Interface
+Once one of your Actors gets target a set of methods are called. In particular On Target acquired when it gets targeted by the player, and OnTargetLosed when he is no more the currently focused target. 
+
+4.4 Target Point Component
+You can also add one or more Target Points to your targetable actors. By default if you target an actor with the Force Camera Control rotation set, your camera will automatically point to the TargetActor position. However, if the Actor has a TargetPointComponent the camera will lock on the Component position. This will help you to point the target to the exact point you need of the actor. In addition you can add multiple Target Points Components to each target. When you trigger Right/UpSearch the target will automatically switch among the TargetPoints Components of that Actor. This is very helpful if you want to have, for instance, a huge enemy with multiple targetable points on it, like hands/ head etc.
+
+4.5 Target Filters
+Target filters are used to dynamically modify your “targetable” rules. A Target Filter is a class with just a virtual method IsActorTargetable that will allow you to add targetables rule to your game, even at runtime using AddFilter / Remove filter methods. 
+
+4.6 AI TargetComponent
+AI Target Component is used to actually bypass Unreal Engine’s AIController SetTarget method that  sets the AI to look at the actor's world location, that in humanoid characters is normally around the waist. Using AITargetComponent's SetTarget, the viewpoint location will be changed to the actual TargetPointComponent, allowing you to move the TargetComponent at any point you want.

@@ -1,0 +1,131 @@
+Actions Setup
+ ACF Actions System
+ACF Action System is the Core of ACF combat. All the actions are handled inside the ActionsManagerComponent, which acts like a kind of State Machine for the ACFCharacter. An Action, as the name itself suggest, is an animation (an AnimationMontage) played on your character that is bound somehow with some logic. Is an highly generic concept but for this reason could be actually used to do whatever you want while keeping an high level of abstraction, being extremely extendable and avoiding having tons of logic on your character. Actions are also modular so that you can use an Action logic for multiple characters avoiding code duplication and using composition and avoiding inheritance. 
+
+8.3 Setup
+The first thing to do to is to Setup the gameplay tag referred to your actions. This can be done in Project Settings  exactly as seen in the Chapter with ARS. once you have your Actions. In your Project Settings you’ll find a new tab dedicated to ACF. You have to tell to the system the base tag for basic actions that are automatically triggered by ACF like Idle (your default state), Hit (the state in which the character is send when an hit is received) and Death (the state in which the character is send when your Health (the Statistic identified with Health Tag) is <=0.
+
+Other Configurations will be expanded in next chapters.
+
+8.4 Actions
+Character Actions are triggered from the ActionsManager Component with the TriggerAction function which takes as an Input both the Action Tag and the trigger priority. 
+
+Actions are basically a set of character animations and logic. For each actions you can define an Animation Montage, an ActionClass with a set of implementable virtual methods and a set of configurable properties. 
+
+High priority triggers will interrupt lower priority actions while their are executed. Trigger with the same priority will NOT interrupt actual action. Triggers with the Highest priority interrupts everything. The actions your character can execute are defined in the ACFAnimInstance. The reason why I choose to put Actions in the AnimInstance is because it would be easier to retarget for you an entire animset since, when you retarget an AnimBlueprint in Unreal, all the referenced assets are automatically retargeted to the new skeleton. 
+
+To create a new action you need to create a new class that inherits from ACFBaseAction.
+
+Actions have a set of methods that can be implemented. They are all commented largely in code and can be checked by passing your mouse cursor near the blueprint node of the implementable event.
+
+
+Setting up an action is actually pretty easy but can be confusing the first time so I’ll try to explain how it works with an example. In the image below there is a configuration for a dual wielded attack action with combos that can be triggered only when we are in SwordAndShield Moveset.
+
+The first 5 properties are from the ACFAttackActionsBP which is a subclass of ACFBaseAction. 
+
+From ActionsConfig and belows there the properties that are common for all the actions. 
+
+In that case we are setting that the Action.Attack  has an ActionCost of 25 Stamina points (RPG.Statistics.Stamina). If the carachter has not enough stamina, the action will not be triggered. Requirements are used to check if the Stat of the character are actually higher than the ones provided (useful for example for special attacks that may require a certain amount of Strength). 
+
+Modifiers have been largely discussed in chapter 2, they can also be used for actions, for example for heavy attacks, that needs to be performed with a bonus in Strength or in MeleeDamage. 
+
+PerformableiInAir: identifies if this action can be triggered while the character owner is not touching the ground. 
+
+CanBeStored: if set to true, if this action is triggered when the character is busy doing an higher priority action, this action will be triggered once the character is not busy anymore. Please notice that stored actions are not stacked, just the last one is played.
+
+CoolDown: when performed, this action is actually locked and cannot be performed until the cooldown is time is passed. 
+
+PlayRandomMontageSection: if this montage has multiple section and this is set to true, a random section will be played. 
+
+BindActionToAnimation: By default set to true, once the animation is finished, the action is automatically exited and character returns in Idle action as set in the DeveloperSettings. If this is is set to false you have to manually trigger ExitAction from the ActionsManagerComponent.
+
+
+Actions can be nearly everything that your character can do. ActionsSet and Moveset Actions
+
+are located inside the ACFActions Component. Actions are bound to an AnimMontage. Inside the Montage you can control your actions with so-called AnimNotifies. There is a mapping between the AnimNotify of the AnimMontage and
+
+the event function in the action:
+
+AnimMontage
+
+Event Called in the Action
+
+Description
+
+AnimMontage Section started
+
+On Action Started
+
+Will be automatically triggered if
+
+the AnimMontage starts
+
+AnimMontage Section ended
+
+On Action Ended
+
+Will be automatically triggered if
+
+the AnimMontage reaches the
+
+end
+
+ACFActionSubState
+
+(AnimNotify)
+
+OnSubActionStateEntered &
+
+OnSubActionStateExited
+
+Often used to create a short
+
+time window for the player
+
+(combat combos, counter
+
+attacks)
+
+ACFNotifyAction
+
+On Notable Point Reached
+
+Generic notify to have an event in the action when the montage reaches a specific point of the animation
+
+ACFNotifyExitAction
+
+On Action Ended 
+
+Ends the action before the
+
+AnimMontage reaches the end.
+
+Useful to allow the player to
+
+perform the next actions
+
+because only one action can be
+
+triggered at a time
+
+Triggered when Release
+
+Sustained Action from
+
+ACFActionsComponent is
+
+called (see Figure 5)
+
+On Action Released
+
+For ACFSustainedAction type
+
+only!
+
+Sustained Actions are used for
+
+long actions with loop
+
+animations e.g.: for charged bow
+
+shots

@@ -1,0 +1,63 @@
+haracter Movement
+7.1 Setting a New Character
+If you want to create a character you must create a Blueprint that inherits from ACFPlayerCharacterBP or ACFAICharacterBP depending if you want to create a player controlled character or an AI Controlled one. If you want to create a character that can be both controlled by a player or an AI Controller I suggest to create an ACFPlayerCharacter since the additional logic it has is minimal and all the extra component (Targeting and interaction) will be automatically disabled once the player is AIControlled, so there will be no additional overhead on performance. In the blueprint you can actually set your Mesh and your ACFAnimInstance (mandatory!) that will be largely explained in the next chapter. in your Character you must configure: 
+
+After that you have to configure your components, in particular:
+
+7.2 ACF Character Movement Component
+Character Locomotion is handled inside the Locomotion Component. It should be configured to properly handle how your character and creatures move.
+
+
+bCanMove: Indicates if this character can Move.
+
+
+bCanAim : Indicates if this character has Aim Offset Logic 
+
+DefaultState : Indicates the default locomtionstate
+
+LocomotionStates: Indicates max speed for each locomtionstate
+
+bShouldStrafe:  Indicates if this character follows control rotation and strafes. 
+
+RotationRate : Indicates the actual rotation speed of the character. This influences tracking during attacks
+
+SprintDirectionCone: Indicates the max angular distance from the cone that allows your character to sprint
+
+
+For Mounts / Quadrupeds you can also set the speed to be actually forced to the forward vectr and set the speed in which this interpolation is done. To better explain the SnapConfiguration we must go deep in ACF AnimationSystem. 
+
+7.3 Damage Handler Component
+When Collision Manage detects an hit, the TakeDamage is called on the hit Receiver. 
+
+To actually handle the damage calculation a specific DamageCalculator Class exists that has a virtual method:
+
+
+This is done to let you write your own calculation logics and provide to ACF the actual final damage Event with the actual FinalDamage field properly filled. A sample damage calculation class is provided with ACF but actually is highly reccomended to create your own DamageCalculator class and implement the CalculateFinalDamage method.
+
+To actually implement your damage calculation you have to create as child class of DamageCalculator and Implement the CalculateFinalDamage event. the inDamageEvent contains the actual damage info  calculate by ACF. You can override those data with your own, in particular you must override the FinalDamage field, which is the one that will be subtracted to the hit receiver health. 
+
+7.4 Effects Manager Component
+EffectManagerComponent is the one that is used to trigger particle and sounds on particular events like footsteps and hit event. 
+
+7.4.1 Footsteps
+To configure Foosteps you have to actually add the ACFFootstepNotify AnimNotify to the related animations, more info about this process: https://docs.unrealengine.com/en-US/Engine/Animation/Sequences/Notifies/index.html
+
+
+If you want to just use a single fx for every footstep you can customize the Default Footestep Fx field, otherwies check the CheckForSurface box to setup different FX for each material surface. The component will dinamically trace and check the actual surface material everytime a footstep is triggered. Footstep will be automatically gathered from the FeetBoneNames map.
+
+FootstepNoiseByLocomotionState identifies the amount of noise generated for each state, used for the AI perception system. Useful for stealth games. 
+
+7.4.1 Damage Effects
+DefaultUnarmedSwingFX: identifies the effect that will be triggered when the character attacks without a weapon during the damage phase, in that case the weapon effect defined in the weapon will override this. 
+
+
+DamageEffectsByHitReaction: Is a map of map. The upper level has the Action Response as as key and a map of DamageType/Effects as a value. 
+
+ActionResponse are a subgroup of actions, largely discussed in the Animation System that are automatically triggered once an hit is received: es hit, parry, block, dodge etc. For each of that you can define a set of effects that depends on the damage types. In ACF a base set of DamageTypes are defined as subclasses of Unreal’s UDamageType. In particular they are: CutDamage, ImpactDamage, ProjectileDamage and SpellDamage. 
+
+7.5 Interaction Component
+ACFInteractionComponent is the one responsible of interactable with the world. It extends SphereCollision Component to trace for interactables. The channels to trace can be configured throught the component itself. To let an object to be interactable it should implement the interface ACFInteractableInterface and provide an implementation for at least the CanBeImplemented method, which returns false by default. To actually define the interaction you'll need to implement the OnInteractedByPawn method.
+
+7.6 Actions Manager Component
+This component implements all the logic related to the character’s state machine and ACF Actions. Those actions will be extensively explained in the next chapter. 
+

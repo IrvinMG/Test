@@ -1,0 +1,21 @@
+To enable Vault & Mantle in your character you’d need to add to it the ACF_VaultComponent_BP and configure his properties: 
+
+
+RetryIntervalSeconds : how often it should check for mantle (not done in tick for performance)
+
+CharacterSpeedThreshold : if you may only vault after a certain speed
+
+Vault / Mantle Action: the action to be triggered for vault / mantle 
+
+Vault Over Mantle Threshold : if the width of the item to be vaulted is above the threshold, it will mantle it instead. 
+
+Then you’d need to implement those Actions in to your ActionsSet. 
+
+
+Inside the Mantle action itself you may tune at which height it should switch between the mantle high / mantle low animations. If you want to change the animation make sure to add the same MotionWarp notifies as the one provided in the sample. 
+
+Vaultable Objects
+To make an Object vaultable you’d need to select it in the world, locate is Collisions profile settings, 
+
+flag the GenerateOverlapEvents bool and make it’s collision channel the same as the one set inside the component (Vaultable by default). That’s it!
+

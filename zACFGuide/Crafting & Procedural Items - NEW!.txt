@@ -1,0 +1,5 @@
+Crafting & Procedural Items - NEW!
+9.5 Crafting and Vendors
+ACF features a powerfull yet simple to use crafting system that allows to create new Items and upgrade current items. All the functions needed to enable it are in the ACF Crafting Component, that can be applied to wathever actor you want: an NPC, a bench, etc.. 
+
+To make it work you need to add to your player controller the ACFCurrencyComponent, which handles are the currency related stuff. Then under the category ACF you'll find all the required functions to create and upgrade items from the Equipment Component of the currentrly controlled character.

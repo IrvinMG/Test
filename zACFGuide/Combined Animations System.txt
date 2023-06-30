@@ -1,0 +1,27 @@
+Combined Animations System
+12.1 CAS Setup
+Combined Animations System is an ACF module that allows 2 characters (a master and a Slave) to perform a simultaneous action and play a sinchronized animation. One of the 2 will be considered the "Master", the one who starts the animation (usually the player character), the other one should be considered "the slave", the one that responds to the animation Master. 
+
+
+12.2 Anim Master Setup
+
+Animation Master is the character driving the combined animations, it must have a snapper component and one between CASAnimMasterComponen. Master Anim Configs is the actual DB of the Combined Animations this actor can perform. They can be triggered calling TryPlayCombinedAnimation:
+
+
+Every combined anim can be configued as in the image: You can set the max distance for which this anim can be triggered together with the Slave Required Direction. If both conditions are satisfied (distance between the two character is below the MaxDistanceToStartSnapping and SlaveRequiredDirection for relative direction) the AnimMaster will start snapping throught the Slave and once his distasnce is below MaxDistanceToStartCombinedAnimation, the combined animation will start and the Slave will be rotate according to match SlaveForcedDirection. The montage that will be played on the master is of course MasterAnimMontage. 
+
+12.3 Slave Setup
+Every character that can be involved must have a CASAnimSlaveComponent properly configured with a datatable of FCombinedAnimsSlave. This DT only needs to be configured with the Montage that must be triggered and the name of the relative Master's entry in Master's DT. In addition you can define a set of custom condition that needs to be satisfied to involve this character in any Combined Animation.
+
+
+12.4 Executor Component (ACF Only)
+ACFExecutorComponent is a child class of CASAnimMaster that handles execution, a particular set of combined animations that kills the slave at the end of the anims and triggers simultaneously a Camera Sequence (check Chapter 5). To Execute a character you need instead to have an ACFExecutorComponent INSTEAD of the CASMasterAnimComponent.
+
+*Executor Component is only present in ACF, not in Combined Animation System*
+
+
+To Execute a character you need instead to have an ACFExecutorComponent INSTEAD of the CASMasterAnimComponent. Executions can be triggered with the provided methods. ExecutionComp tries to automatically find the best anim for the current situation considering relative distances, positions of the target and currently equipped weapon of the AnimMaster. To let the component decide which animation to play, you'll need to fill the ExecutionsByDirectionsAndWeapon table
+
+
+In the provided sample, the combined anim called "Longs1" can only be triggered once the Master is "behind" the slave and he (the Master) is equipping a Weapon of the type Item.Weapon.Melee.Longsword
+

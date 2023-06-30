@@ -1,0 +1,14 @@
+Mount system
+11.1 Setup
+
+To use ACF Mount System you have to add the ACFMountComponent to your mountable character and ACFRiderComponent to your actual rider character. In the Mount you should actually add also an ACFAnimationManagerComponent together with at least an ACFAnimationPoint that will be used as a Dismount Point Target.
+
+In the ACFMountComponent you'll have to set the name of the Socket to be used to attach the rider to the mount
+
+and the name of the Dismount Point (an ACFAnimationPoint inside the same actor) that will be used to detach the rider. If the mount is possessed once mounted (this can be set inside ACFRiderComponent), you can set a list of actions to be retriggered from the mount the rider (check chapter 8 for Actions), usefull to setup a mounted combat. 
+
+If the mount is set as a Companion it will follow the player once it is not mounted. 
+
+To Actually start mounting you have to call StartMount in the ACFRiderComponent with the reference of the character to be mounted. 
+
+Please notice that Mount System can also be used for vehicles and any kind of mounts (dragons, horses, beasts etc.).
